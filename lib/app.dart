@@ -1,3 +1,4 @@
+import 'package:driver_app/core/router/app_router.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatefulWidget {
@@ -10,12 +11,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Drive App'),
-        ),
-      ),
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      routerConfig: appRouter,
     );
   }
 }
