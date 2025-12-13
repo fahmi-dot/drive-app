@@ -1,6 +1,6 @@
 import 'package:driver_app/features/drive/domain/entities/location.dart';
 
-class LocationModel extends Location {
+class LocationModel extends LocationE {
   LocationModel({
     required super.latitude,
     required super.longitude,
@@ -15,7 +15,7 @@ class LocationModel extends Location {
     );
   }
 
-  factory LocationModel.fromEntity(Location location) {
+  factory LocationModel.fromEntity(LocationE location) {
     return LocationModel(
       latitude: location.latitude, 
       longitude: location.longitude, 
@@ -31,8 +31,8 @@ class LocationModel extends Location {
     };
   }
 
-  Location toEntity() {
-    return Location(
+  LocationE toEntity() {
+    return LocationE(
       latitude: latitude, 
       longitude: longitude,
       address: address,
