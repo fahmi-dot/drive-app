@@ -26,7 +26,7 @@ final getCurrentLocationUseCaseProvider = Provider<GetCurrentLocationUseCase>((r
   return GetCurrentLocationUseCase(repository);
 });
 
-final locationProvider = AsyncNotifierProvider.autoDispose<LocationNotifier, LocationE?>(
+final locationProvider = AsyncNotifierProvider<LocationNotifier, LocationE?>(
   LocationNotifier.new,
 );
 
@@ -36,17 +36,17 @@ class LocationNotifier extends AsyncNotifier<LocationE?> {
     return null;
   }
 
-  Future<bool> getCurrentLocation() async {
+  Future<LocationE?> getCurrentLocation() async {
     state = AsyncLoading();
 
     try {
       final location = await ref.read(getCurrentLocationUseCaseProvider).execute();      
 
       state = AsyncData(location);
-      return true;
+      return location;
     } catch (e, stackTrace) {
       state = AsyncError(e, stackTrace);
-      return false;
+      return null;
     }
   }
 }

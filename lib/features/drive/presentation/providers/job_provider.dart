@@ -150,6 +150,18 @@ class JobNotifier extends AsyncNotifier<List<Job>> {
     }
   }
 
+  Future<void> _completeJob(String id) async {
+    final job = _getJobById(id);
+
+    if (job == null) return;
+
+    final completedJob = job.copyWith(
+      status: JobStatus.completed,
+      completedAt: DateTime.now(),
+    );
+    await _updateJob(completedJob);
+  }
+
   Job? _getJobById(String id) {
     final jobs = state.value!;
 
@@ -214,20 +226,8 @@ class JobNotifier extends AsyncNotifier<List<Job>> {
 
     await _updateJob(updatedJob);
 
-    if (job.stops.every((s) => s.isCompleted)) {
+    if (updatedJob.stops.every((s) => s.isCompleted)) {
       await _completeJob(id);
     }
-  }
-
-  Future<void> _completeJob(String id) async {
-    final job = _getJobById(id);
-
-    if (job == null) return;
-
-    final completedJob = job.copyWith(
-      status: JobStatus.completed,
-      completedAt: DateTime.now(),
-    );
-    await _updateJob(completedJob);
   }
 }
