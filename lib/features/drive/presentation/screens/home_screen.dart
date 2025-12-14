@@ -165,7 +165,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
               Row(
                 children: [
                   HeroIcon(
-                    HeroIcons.clock,
+                    job.status == JobStatus.pending
+                        ? HeroIcons.clock
+                        : job.status == JobStatus.ongoing
+                            ? HeroIcons.truck
+                            : HeroIcons.checkBadge,
                     color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                     size: AppSizes.iconL,
                   ),
@@ -209,7 +213,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
       case JobStatus.completed:
         color = Theme.of(context).colorScheme.tertiary;
         text = AppStrings.completed;
-        icon = HeroIcons.checkCircle;
+        icon = HeroIcons.checkBadge;
         break;
     }
 
@@ -273,7 +277,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
           style: TextStyle(
             color: Theme.of(context).colorScheme.onPrimary,
             fontSize: AppSizes.font2XL,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w900,
+            fontFamily: 'cursive'
           ),
         ),
         actions: [

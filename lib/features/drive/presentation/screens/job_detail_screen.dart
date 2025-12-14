@@ -1,8 +1,10 @@
 import 'package:driver_app/core/constants/app_sizes.dart';
 import 'package:driver_app/core/constants/app_strings.dart';
+import 'package:driver_app/core/router/app_router.dart';
 import 'package:driver_app/features/drive/domain/entities/job.dart';
 import 'package:driver_app/features/drive/domain/entities/stop.dart';
 import 'package:driver_app/features/drive/presentation/providers/job_provider.dart';
+import 'package:driver_app/shared/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -19,11 +21,12 @@ class JobDetailScreen extends ConsumerStatefulWidget {
 
 class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
   final dateFormat = DateFormat('dd MMM yyyy, HH:mm');
+  int currentStopIndex = 0;
 
   Widget _buildStopCard(
     Job job,
     Stop stop,
-    int number,
+    int index,
   ) {
     return Column(
       children: [
@@ -33,8 +36,8 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
               ? Theme.of(context).colorScheme.surface.withValues(alpha: 0.5) 
               : Theme.of(context).colorScheme.surface,
           child: InkWell(
-            onTap: job.isOngoing && !stop.isCompleted
-                ? () => context.pop()
+            onTap: job.isOngoing && !stop.isCompleted && index == currentStopIndex
+                ? () => context.push(Routes.stopAction, extra: {'jobId': job.id, 'stop': stop})
                 : null,
             child: Padding(
               padding: EdgeInsets.all(AppSizes.paddingL),
@@ -58,7 +61,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                               size: AppSizes.iconXL,
                             )
                           : Text(
-                              '$number',
+                              '${index + 1}',
                               style: TextStyle(
                                 color: Theme.of(context).colorScheme.onPrimary,
                                 fontWeight: FontWeight.w700,
@@ -104,10 +107,10 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                               child: Text(
                                 stop.address,
                                 style: TextStyle(
-                                  fontSize: AppSizes.fontL,
                                   color: stop.isCompleted
                                       ? Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6)
                                       : Theme.of(context).colorScheme.onSurface,
+                                  fontSize: AppSizes.fontL,
                                 ),
                               ),
                             ),
@@ -137,7 +140,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                       ],
                     ),
                   ),
-                  if (job.isOngoing && !stop.isCompleted)
+                  if (job.isOngoing && !stop.isCompleted && index == currentStopIndex)
                     HeroIcon(
                       HeroIcons.chevronRight,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -152,40 +155,6 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     );
   }
 
-  Widget _buildStartJobButton(String id) {
-    return ElevatedButton(
-      onPressed: () => _showStartJobDialog(id),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        padding: EdgeInsets.symmetric(vertical: AppSizes.paddingL),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusS)
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          HeroIcon(
-            HeroIcons.play,
-            color: Theme.of(context).colorScheme.onPrimary,
-            size: AppSizes.iconL,
-            style: HeroIconStyle.solid,
-          ),
-          const SizedBox(width: AppSizes.paddingS),
-          Text(
-            AppStrings.startJob,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onPrimary,
-              fontSize: AppSizes.fontL, 
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _showStartJobDialog(String id) {
     showDialog(
       context: context,
@@ -195,6 +164,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurface,
             fontSize: AppSizes.fontXL,
+            fontWeight: FontWeight.w700,
           ),
         ),
         content: Text(
@@ -205,38 +175,33 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: Text(
-              AppStrings.cancel,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
-                fontSize: AppSizes.fontM,
+          GestureDetector(
+            onTap: () => context.pop(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingS),
+              child: Text(
+                AppStrings.cancel,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: AppSizes.fontL,
+                ),
               ),
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
+          GestureDetector(
+            onTap: () {
               ref.read(jobProvider.notifier).startJob(id);
               context.pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    AppStrings.jobStartedNotif,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onTertiary,
-                      fontSize: AppSizes.fontM,
-                    ),
-                  ),
-                  backgroundColor: Theme.of(context).colorScheme.tertiary,
-                ),
-              );
+              showSnackBar(context, AppStrings.successStartingJob, SnackBarType.success);
             },
-            child: Text(
-              AppStrings.start,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
-                fontSize: AppSizes.fontM,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingS),
+              child: Text(
+                AppStrings.start,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: AppSizes.fontL,
+                ),
               ),
             ),
           ),
@@ -247,19 +212,20 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final jobState = ref.watch(jobProvider);
+    final jobs = ref.watch(jobProvider);
 
-    if (jobState.value == null) return CircularProgressIndicator();
+    if (jobs.value == null) return CircularProgressIndicator();
 
-    final job = jobState.value!.firstWhere((j) => j.id == widget.id);
+    final job = jobs.value!.firstWhere((j) => j.id == widget.id);
+    final canStart = job.canStart && ref.watch(ongoingJobsProvider).isEmpty;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppStrings.details,
+          AppStrings.jobDetailTitle,
           style: TextStyle(
             color: Theme.of(context).colorScheme.onPrimary,
-            fontSize: AppSizes.font2XL,
+            fontSize: AppSizes.font2XL - 2,
           ),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -304,7 +270,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                         job.customerName, 
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          fontSize: AppSizes.fontXL,
+                          fontSize: AppSizes.font5XL,
                         )
                       ),
                     ],
@@ -366,7 +332,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                             valueColor: AlwaysStoppedAnimation<Color>(
                               Theme.of(context).colorScheme.secondary
                             ),
-                            minHeight: 8.0,
+                            minHeight: 6.0,
                           ),
                         ),
                         const SizedBox(width: AppSizes.paddingM),
@@ -374,7 +340,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                           '${(job.progress * 100).toInt()}%',
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onSurface,
-                            fontSize: AppSizes.fontXL,
+                            fontSize: AppSizes.font5XL,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -404,11 +370,12 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                     itemCount: job.stops.length,
                     itemBuilder: (context, index) {
                       final stop = job.stops[index];
+                      if (stop.isCompleted) currentStopIndex = index + 1;
 
                       return _buildStopCard(
                         job,
                         stop,
-                        index + 1,
+                        index,
                       );
                     },
                   ),
@@ -418,7 +385,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
           ],
         ),
       ),
-      bottomSheet: job.canStart
+      bottomSheet: canStart
           ? Container(
             padding: EdgeInsets.all(AppSizes.paddingL),
             decoration: BoxDecoration(
@@ -431,7 +398,37 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                 ),
               ],
             ),
-            child: _buildStartJobButton(job.id),
+            child: ElevatedButton(
+              onPressed: () => _showStartJobDialog(job.id),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                foregroundColor: Theme.of(context).colorScheme.onSecondary,
+                padding: EdgeInsets.symmetric(vertical: AppSizes.paddingL),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSizes.radiusS)
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  HeroIcon(
+                    HeroIcons.play,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    size: AppSizes.iconL,
+                    style: HeroIconStyle.solid,
+                  ),
+                  const SizedBox(width: AppSizes.paddingS),
+                  Text(
+                    AppStrings.startJob,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: AppSizes.font5XL, 
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ) : null,
     );
   }

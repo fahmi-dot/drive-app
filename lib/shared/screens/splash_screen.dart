@@ -1,3 +1,4 @@
+import 'package:driver_app/core/constants/app_strings.dart';
 import 'package:driver_app/core/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,10 +29,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     return Scaffold(
       body: Center(
         child: Text(
-          'UDrive',
+          AppStrings.appName,
           style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: 32.0,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w900,
+            fontFamily: 'cursive',
           ),
         ),
       ),
