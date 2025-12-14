@@ -1,4 +1,9 @@
+import 'package:flutter/material.dart';
+
 class AppSizes {
+  static double screenWidth(BuildContext context) => MediaQuery.of(context).size.width;
+  static double screenHeight(BuildContext context) => MediaQuery.of(context).size.height;
+
   static const double paddingXS = 4.0;
   static const double paddingS = 8.0;
   static const double paddingM = 12.0;
@@ -10,6 +15,7 @@ class AppSizes {
   static const double fontS = 11.0;
   static const double fontM = 12.0;
   static const double fontL = 14.0;
+  static const double font5XL = 16.0;
   static const double fontXL = 18.0;
   static const double font2XL = 24.0;
 
