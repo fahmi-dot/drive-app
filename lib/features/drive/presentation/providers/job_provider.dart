@@ -80,50 +80,81 @@ class JobNotifier extends AsyncNotifier<List<Job>> {
     return _loadJobs();
   }
 
+  List<Job> _dummyJobs() {
+    return [
+      {
+        'title': 'Pengiriman Paket Eksklusif',
+        'customerName': 'PT. Maju Jaya',
+        'pickup': 'Jl. Sudirman, Jakarta Pusat',
+        'dropoff': 'Jl. Gatot Subroto, Jakarta Selatan',
+      },
+      {
+        'title': 'Pengiriman Paket Express',
+        'customerName': 'PT. Maju Terus',
+        'pickup': 'Jl. Thamrin, Jakarta Pusat',
+        'dropoff': 'Jl. Rasuna Said, Jakarta Selatan',
+      },
+      {
+        'title': 'Pengiriman Multi-Drop',
+        'customerName': 'PT. Maju Pantang Mundur',
+        'pickup': 'Jl. Gajah Mada, Jakarta Barat',
+        'dropoff': 'Jl. Mangga Dua Raya, Jakarta Utara',
+      },
+      {
+        'title': 'Antar Dokumen Penting',
+        'customerName': 'CV. Solusi Bisnis',
+        'pickup': 'Jl. Jenderal Ahmad Yani, Jakarta Timur',
+        'dropoff': 'Jl. Letnan Jenderal S. Parman, Jakarta Barat',
+      },
+      {
+        'title': 'Kirim Sparepart Mesin',
+        'customerName': 'PT. Teknik Mandiri',
+        'pickup': 'Jl. Prof. Dr. Satrio, Jakarta Selatan',
+        'dropoff': 'Jl. Tebet Barat Dalam, Jakarta Selatan',
+      },
+      {
+        'title': 'Kargo Barang Elektronik',
+        'customerName': 'PT. Elektronik Kita',
+        'pickup': 'Jl. Asia Afrika, Jakarta Pusat',
+        'dropoff': 'Jl. Sudirman, Jakarta Pusat',
+      },
+      {
+        'title': 'Pengiriman Retail Pusat',
+        'customerName': 'PT. Retail Nusantara',
+        'pickup': 'Jl. K.H. Mas Mansyur, Jakarta Pusat',
+        'dropoff': 'Jl. Panglima Polim, Jakarta Selatan',
+      },
+      {
+        'title': 'Kirim Barang Grosir',
+        'customerName': 'UD. Grosir Jaya',
+        'pickup': 'Jl. R.E. Martadinata, Jakarta Utara',
+        'dropoff': 'Jl. Kebon Sirih, Jakarta Pusat',
+      },
+      {
+        'title': 'Dokumen Kontrak Klien',
+        'customerName': 'PT. Bisnis Prima',
+        'pickup': 'Jl. Menteng Raya, Jakarta Pusat',
+        'dropoff': 'Jl. Senen Raya, Jakarta Pusat',
+      },
+      {
+        'title': 'Pengiriman Paket Khusus',
+        'customerName': 'PT. Cepat Sampai',
+        'pickup': 'Jl. Pasar Minggu, Jakarta Selatan',
+        'dropoff': 'Jl. M.H. Thamrin, Jakarta Pusat',
+      },
+    ].map((e) => Job(
+          title: e['title']!,
+          customerName: e['customerName']!,
+          stops: [
+            Stop(type: StopType.pickup, address: e['pickup']!),
+            Stop(type: StopType.dropoff, address: e['dropoff']!),
+          ],
+        )).toList();
+  }
+
   Future<void> _addDummyJobs() async {
     try {
-      final dummyJobs = [
-        Job(
-          title: 'Pengiriman Paket Eksklusif',
-          customerName: 'PT. Maju Jaya',
-          stops: [
-            Stop(type: StopType.pickup, address: 'Jl. Sudirman, Jakarta Pusat'),
-            Stop(
-              type: StopType.dropoff,
-              address: 'Jl. Gatot Subroto, Jakarta Selatan',
-            ),
-          ],
-        ),
-        Job(
-          title: 'Pengiriman Paket Express',
-          customerName: 'PT. Maju Terus',
-          stops: [
-            Stop(type: StopType.pickup, address: 'Jl. Thamrin, Jakarta Pusat'),
-            Stop(
-              type: StopType.dropoff,
-              address: 'Jl. Rasuna Said, Jakarta Selatan',
-            ),
-          ],
-        ),
-        Job(
-          title: 'Pengiriman Multi-Drop',
-          customerName: 'PT. Maju Pantang Mundur',
-          stops: [
-            Stop(
-              type: StopType.pickup,
-              address: 'Jl. Gajah Mada, Jakarta Pusat',
-            ),
-            Stop(
-              type: StopType.dropoff,
-              address: 'Jl. Kemang Raya, Jakarta Selatan',
-            ),
-            Stop(
-              type: StopType.dropoff,
-              address: 'Jl. Ampera Raya, Jakarta Selatan',
-            ),
-          ],
-        ),
-      ];
+      final dummyJobs = _dummyJobs();
 
       await ref.read(addDummyJobUseCaseProvider).execute(dummyJobs);
     } catch (e) {

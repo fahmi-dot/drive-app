@@ -18,6 +18,8 @@ class JobDataSourceImpl implements JobDataSource {
 
   @override
   Future<void> addDummyJobs(List<JobModel> jobs) async {
+    if (prefs.containsKey(_key)) return;
+
     try {
       _saveJobs(jobs);
     } catch (e) {
