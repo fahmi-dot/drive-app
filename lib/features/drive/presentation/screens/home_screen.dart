@@ -284,19 +284,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         ),
         actions: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSizes.paddingL),
-            child: GestureDetector(
-              onTap: () => ref.read(themeProvider.notifier).toggle(),
-              child: HeroIcon(
-                Theme.of(context).colorScheme.brightness == Brightness.light
-                    ? HeroIcons.sun
-                    : HeroIcons.moon,
-                color: Theme.of(context).colorScheme.onPrimary,
-                size: AppSizes.iconL,
-                style: HeroIconStyle.solid,
-              ),
+            padding: EdgeInsets.symmetric(horizontal: AppSizes.padding2XL),
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () => ref.read(themeProvider.notifier).toggle(),
+                  child: HeroIcon(
+                    Theme.of(context).colorScheme.brightness == Brightness.light
+                        ? HeroIcons.sun
+                        : HeroIcons.moon,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    size: AppSizes.iconXL,
+                    style: HeroIconStyle.solid,
+                  ),
+                ),
+                const SizedBox(width: AppSizes.paddingXL),
+                GestureDetector(
+                  onTap: () => context.push(Routes.settings),
+                  child: HeroIcon(
+                    HeroIcons.cog6Tooth,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    size: AppSizes.iconXL,
+                    style: HeroIconStyle.solid,
+                  ),
+                ),
+              ],
             ),
-          ),
+          )
         ],
         bottom: TabBar(
           controller: _tabController,

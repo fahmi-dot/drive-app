@@ -1,5 +1,6 @@
 import 'package:driver_app/core/constants/app_strings.dart';
 import 'package:driver_app/core/router/app_router.dart';
+import 'package:driver_app/features/auth/presentation/providers/biometric_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -17,8 +18,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 2), () async {
+      final settings = await ref.read(biometricProvider.notifier).getBiometricSettings();
+      
       if (mounted) {
+        if (settings.isEnable) {
+          return context.go(Routes.gate);
+        }
         context.go(Routes.home);
       }
     });
