@@ -5,14 +5,14 @@ Aplikasi mobile untuk driver untuk mengelola pekerjaan dengan fitur kamera dan G
 ## 📸 Screenshot Aplikasi
 
 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-  <img src="screenshots/gate.png" width="200">
-  <img src="screenshots/home_pending_light.png" width="200">
-  <img src="screenshots/home_pending_dark.png" width="200">
-  <img src="screenshots/home_ongoing.png" width="200">
-  <img src="screenshots/home_completed.png" width="200">
-  <img src="screenshots/job_detail.png" width="200">
-  <img src="screenshots/stop_action.png" width="200">
-  <img src="screenshots/settings.png" width="200">
+  <img src="screenshots/gate.png" width="175">
+  <img src="screenshots/home_pending_light.png" width="175">
+  <img src="screenshots/home_pending_dark.png" width="175">
+  <img src="screenshots/home_ongoing.png" width="175">
+  <img src="screenshots/home_completed.png" width="175">
+  <img src="screenshots/job_detail.png" width="175">
+  <img src="screenshots/stop_action.png" width="175">
+  <img src="screenshots/settings.png" width="175">
 </div>
 
 ## 🎯 Fitur Utama & Unduh
@@ -26,7 +26,7 @@ Aplikasi mobile untuk driver untuk mengelola pekerjaan dengan fitur kamera dan G
 - UI yang clean dan user-friendly
 - State management dengan Riverpod
 
-- Link unduh: https://drive.google.com/file/d/1LKVseYB1OVoqUJQt0AjjAgDUXOZbIefp/view?usp=sharing
+- Link unduh: https://drive.google.com/file/d/1MMuxF5wavCBCo0ZVg6bx9AbIDe6Pz1Et/view?usp=sharing
 
 ## 📱 Cara Menggunakan Aplikasi
 
